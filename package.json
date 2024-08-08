@@ -13,8 +13,7 @@
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^4.19.2",
-    "firebase": "^10.12.3",
     "socket.io": "^4.7.5",
-    "vercel": "^34.3.1"
+    "vercel": "^35.2.2"
   }
 }
