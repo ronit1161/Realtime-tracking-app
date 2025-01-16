@@ -1,20 +1,13 @@
-const express = require ('express');
+const express = require('express');
 const app = express();
-const fs = require('fs')
-const path = require('path')
+const path = require('path');
+const http = require('http');  // Import HTTP module
 
-const https = require('https');
+// Create the HTTP server
+const httpServer = http.createServer(app);
 
-// Path to your SSL certificate and key
-const privatekey = fs.readFileSync('/home/ubuntu/Realtime-tracking-app/ssl/selfsigned.key', 'utf8');
-const certificate = fs.readFileSync('/home/ubuntu/Realtime-tracking-app/ssl/selfsigned.crt', 'utf8');
-const credentials = { key: privatekey, cert: certificate };
-
-
-const httpsServer = https.createServer(credentials, app);
-
-// Socket.io setup
-const io = require('socket.io')(httpsServer);
+// Socket.io setup, passing httpServer after it's created
+const io = require('socket.io')(httpServer);
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -24,19 +17,19 @@ app.get("/", (req, res) => {
 });
 
 io.on('connection', (socket) => {
-
     socket.on("send-location", (data) => {
         io.emit("receive-location", { id: socket.id, ...data });
-    })
+    });
     console.log('A user connected');
     
     // Handle disconnection event
     socket.on('disconnect', () => {
-        io.emit("user-disconnected", socket.id)
-      console.log('User disconnected');
+        io.emit("user-disconnected", socket.id);
+        console.log('User disconnected');
     });
-  });
+});
 
-httpsServer.listen(3000, () => {
-    console.log("App is running")
+// Start the HTTP server
+httpServer.listen(3000, () => {
+    console.log("App is running on HTTP");
 });

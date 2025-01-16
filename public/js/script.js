@@ -35,8 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  socket.on("user-disconnectedt", (id) => {
-    if (marker[id]) {
+  socket.on("user-disconnected", (id) => {
+    if (markers[id]) {
       map.removeLayer(markers[id]);
       delete markers[id];
     }
